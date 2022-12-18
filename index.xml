@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Sam Larkin</title>
+    <link>http://samlarkin.github.io/</link>
+    <description>Recent content on Sam Larkin</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <lastBuildDate>Sun, 11 Dec 2022 17:00:37 +0000</lastBuildDate><atom:link href="http://samlarkin.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Contact</title>
+      <link>http://samlarkin.github.io/contact/</link>
+      <pubDate>Sun, 18 Dec 2022 00:00:00 +0000</pubDate>
+      
+      <guid>http://samlarkin.github.io/contact/</guid>
+      <description>If you&amp;rsquo;d like to get in touch with me - whether you want to know more about any of the content on this site, or you just want to introduce yourself - I&amp;rsquo;d love to hear from you.
+You can contact me using LinkedIn.</description>
+    </item>
+    
+    <item>
+      <title>Now</title>
+      <link>http://samlarkin.github.io/now/</link>
+      <pubDate>Sun, 18 Dec 2022 00:00:00 +0000</pubDate>
+      
+      <guid>http://samlarkin.github.io/now/</guid>
+      <description>I&amp;rsquo;m currently living and working in Oxford, UK.
+Portfolio I&amp;rsquo;m currently working on developing this site &amp;ndash; using the static site generator Hugo and GitHub Pages &amp;ndash; to act as personal portfolio.
+Data Science Skills Bootcamp I&amp;rsquo;m currently enrolled in a Department for Education Skills Bootcamp in Data Science, provided by HyperionDev. You can see some of the projects I&amp;rsquo;ve been working on here.
+Reading I&amp;rsquo;m currently reading Prisoners of Geography by Tim Marshall.</description>
+    </item>
+    
+    <item>
+      <title>Exploratory Data Analysis on the UCI Automobile Dataset</title>
+      <link>http://samlarkin.github.io/projects/uci_automobile_eda/</link>
+      <pubDate>Thu, 08 Dec 2022 23:19:26 +0000</pubDate>
+      
+      <guid>http://samlarkin.github.io/projects/uci_automobile_eda/</guid>
+      <description>Introduction This report outlines the process followed during an Exploratory Data Analysis (EDA) of the automobile dataset, as supplied in automobile.txt. The dataset is also available online at http://archive.ics.uci.edu/ml/datasets/Automobile.
+The dataset contains data relating to 26 different attributes of 205 automobiles. The attributes are:
+   Name Description Type Units     symboling insurance risk rating Categorical n/a   make name of manufacturer Categorical n/a   fuel-type type of fuel used Categorical n/a   aspiration aspiration type Categorical n/a   num-of-doors number of doors in words e.</description>
+    </item>
+    
+    <item>
+      <title>About</title>
+      <link>http://samlarkin.github.io/about/</link>
+      <pubDate>Wed, 21 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>http://samlarkin.github.io/about/</guid>
+      <description>Interests  computing cycling language learning photography drawing and painting  Education I graduated with a Master of Engineering (MEng) degree in Mechanical Engineering from the University of Bristol in 2018.
+Work Currently, I work as a transport planner in Oxfordshire.</description>
+    </item>
+    
+  </channel>
+</rss>
