@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en" dir="auto">
+
+<head><meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="robots" content="index, follow">
+<title>Exploratory Data Analysis: WHO COVID-19 data | Sam Larkin</title>
+<meta name="keywords" content="">
+<meta name="description" content="Introduction This report outlines the process followed during an Exploratory Data Analysis (EDA) on data published by the World Health Organisation (WHO) data on daily COVID-19 cases and deaths by date reported to the WHO. 1
+The dataset (as retrieved on 2022-12-12) contains 254064 records (this dataset continues to be updated and will contain more records if retrieved at a later date), each with 8 attributes:
+   Name Type Description     Date_reported Date Date of reporting to WHO   Country_code String ISO Alpha-2 country code   Country String Country, territory, area   WHO_region String WHO region offices   New_cases Integer New confirmed cases   Cumulative_cases Integer Cumulative confirmed cases reported to the WHO to date   New_deaths Integer New confirmed deaths   Cumulative_deaths Integer Cumulative confirmed deaths reported to the WHO to date    Missing Data Null values The dataset has no null values in any column, with the exception of the Country_code column, which is missing 1072 values (0.">
+<meta name="author" content="Sam Larkin">
+<link rel="canonical" href="http://samlarkin.github.io/projects/who_covid19_eda/">
+<link crossorigin="anonymous" href="/assets/css/stylesheet.e09876d907e1a701a295d7b78cc57831dffa5fc5e8dac856334d065bd3ce4654.css" integrity="sha256-4Jh22QfhpwGilde3jMV4Md/6X8Xo2shWM00GW9PORlQ=" rel="preload stylesheet" as="style">
+<link rel="icon" href="http://samlarkin.github.io/favicon.ico">
+<link rel="icon" type="image/png" sizes="16x16" href="http://samlarkin.github.io/favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="http://samlarkin.github.io/favicon-32x32.png">
+<link rel="apple-touch-icon" href="http://samlarkin.github.io/apple-touch-icon.png">
+<link rel="mask-icon" href="http://samlarkin.github.io/safari-pinned-tab.svg">
+<meta name="theme-color" content="#2e2e33">
+<meta name="msapplication-TileColor" content="#2e2e33">
+<link rel="alternate" type="application/rss+xml" href="http://samlarkin.github.io/projects/who_covid19_eda/index.xml">
+<noscript>
+    <style>
+        #theme-toggle,
+        .top-link {
+            display: none;
+        }
+
+    </style>
+    <style>
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --theme: rgb(29, 30, 32);
+                --entry: rgb(46, 46, 51);
+                --primary: rgb(218, 218, 219);
+                --secondary: rgb(155, 156, 157);
+                --tertiary: rgb(65, 66, 68);
+                --content: rgb(196, 196, 197);
+                --hljs-bg: rgb(46, 46, 51);
+                --code-bg: rgb(55, 56, 62);
+                --border: rgb(51, 51, 51);
+            }
+
+            .list {
+                background: var(--theme);
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-track {
+                background: 0 0;
+            }
+
+            .list:not(.dark)::-webkit-scrollbar-thumb {
+                border-color: var(--theme);
+            }
+        }
+
+    </style>
+</noscript><meta property="og:title" content="Exploratory Data Analysis: WHO COVID-19 data" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="http://samlarkin.github.io/projects/who_covid19_eda/" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Exploratory Data Analysis: WHO COVID-19 data"/>
+<meta name="twitter:description" content=""/>
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position":  1 ,
+      "name": "Projects",
+      "item": "http://samlarkin.github.io/projects/"
+    }, 
+    {
+      "@type": "ListItem",
+      "position":  2 ,
+      "name": "Exploratory Data Analysis: WHO COVID-19 data",
+      "item": "http://samlarkin.github.io/projects/who_covid19_eda/"
+    }
+  ]
+}
+</script>
+</head>
+
+<body class="list" id="top">
+<script>
+    if (localStorage.getItem("pref-theme") === "dark") {
+        document.body.classList.add('dark');
+    } else if (localStorage.getItem("pref-theme") === "light") {
+        document.body.classList.remove('dark')
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.body.classList.add('dark');
+    }
+
+</script>
+
+<header class="header">
+    <nav class="nav">
+        <div class="logo">
+            <a href="http://samlarkin.github.io/" accesskey="h" title="Sam Larkin (Alt + H)">Sam Larkin</a>
+            <div class="logo-switches">
+                <button id="theme-toggle" accesskey="t" title="(Alt + T)">
+                    <svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                    <svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="18" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <ul id="menu">
+            <li>
+                <a href="http://samlarkin.github.io/about/" title="About">
+                    <span>About</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://samlarkin.github.io/contact/" title="Contact">
+                    <span>Contact</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://samlarkin.github.io/now/" title="Now">
+                    <span>Now</span>
+                </a>
+            </li>
+            <li>
+                <a href="http://samlarkin.github.io/projects/" title="Projects">
+                    <span>Projects</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<main class="main"> 
+<header class="page-header">
+  <h1>
+    Exploratory Data Analysis: WHO COVID-19 data
+  </h1>
+</header>
+<div class="post-content"><h2 id="introduction">Introduction<a hidden class="anchor" aria-hidden="true" href="#introduction">#</a></h2>
+<p>This report outlines the process followed during an Exploratory Data Analysis
+(EDA) on data published by the World Health Organisation (WHO) data on daily
+COVID-19 cases and deaths by date reported to the WHO. <sup id="fnref:1"><a href="#fn:1" class="footnote-ref" role="doc-noteref">1</a></sup></p>
+<p>The dataset (as retrieved on 2022-12-12) contains 254064 records (this dataset continues
+to be updated and will contain more records if retrieved at a later date), each
+with 8 attributes:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Name</th>
+<th style="text-align:left">Type</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><code>Date_reported</code></td>
+<td style="text-align:left">Date</td>
+<td style="text-align:left">Date of reporting to WHO</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>Country_code</code></td>
+<td style="text-align:left">String</td>
+<td style="text-align:left">ISO Alpha-2 country code</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>Country</code></td>
+<td style="text-align:left">String</td>
+<td style="text-align:left">Country, territory, area</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>WHO_region</code></td>
+<td style="text-align:left">String</td>
+<td style="text-align:left">WHO region offices</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>New_cases</code></td>
+<td style="text-align:left">Integer</td>
+<td style="text-align:left">New confirmed cases</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>Cumulative_cases</code></td>
+<td style="text-align:left">Integer</td>
+<td style="text-align:left">Cumulative confirmed cases reported to the WHO to date</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>New_deaths</code></td>
+<td style="text-align:left">Integer</td>
+<td style="text-align:left">New confirmed deaths</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>Cumulative_deaths</code></td>
+<td style="text-align:left">Integer</td>
+<td style="text-align:left">Cumulative confirmed deaths reported to the WHO to date</td>
+</tr>
+</tbody>
+</table>
+<h2 id="missing-data">Missing Data<a hidden class="anchor" aria-hidden="true" href="#missing-data">#</a></h2>
+<h3 id="null-values">Null values<a hidden class="anchor" aria-hidden="true" href="#null-values">#</a></h3>
+<p>The dataset has no null values in any column, with the exception of the
+<code>Country_code</code> column, which is missing 1072 values (0.42% of rows in the
+dataset).</p>
+<p>Upon inspecting the rows with missing data, it seems that only records with
+<code>Country</code> values of &ldquo;Other&rdquo; are missing. The WHO state that this category
+indicates:</p>
+<blockquote>
+<p>Other: cases and deaths reported from international conveyances, included in
+global totals but not reflected in epidemiological curves as not associated
+with a country or region.</p>
+</blockquote>
+<p>This data has been retained, in order to avoid incorrectly adjusting the global
+figures on COVID-19 cases and deaths.</p>
+<p>That being said, the data with no ISO Alpha-2 country code <sup id="fnref:2"><a href="#fn:2" class="footnote-ref" role="doc-noteref">2</a></sup> has
+not been mapped in the chloropleth maps shown below, as these country codes are
+the means by which the COVID-19 data from the WHO was merged with the geographical
+representation of each country&rsquo;s boundary, and with its estimated population
+(both of which are available in a single GeoJSON file from the World Bank).
+<sup id="fnref:3"><a href="#fn:3" class="footnote-ref" role="doc-noteref">3</a></sup></p>
+<h3 id="data-not-recorded">Data not recorded<a hidden class="anchor" aria-hidden="true" href="#data-not-recorded">#</a></h3>
+<p>Although &ndash; as described above &ndash; there is very little missing data in the dataset
+in terms of null values, there is likely to be a significant amount of data
+which is completely missing from the dataset (having never been recorded and
+reported to the WHO).</p>
+<p>Cases of COVID-19 which have gone untested and undiagnosed &ndash; and deaths
+resulting from cases of COVID-19 which were not detected &ndash; will not have been
+reported to the WHO.</p>
+<p>There are many possible causes for failure to identify COVID-19 cases and to
+report them to the WHO. These may include, but are not limited to:</p>
+<ul>
+<li>shortages of testing kits and facilities</li>
+<li>lack of access to medical care of any kind</li>
+<li>lack of access to communications networks (e.g., the internet) and therefore
+to avenues for reporting positive test results</li>
+<li>deliberate avoidance of testing in order to avoid local, national and international
+movement restrictions, or due to a financial imperative to stay in work
+whilst infected</li>
+<li>failure to self-test due to a lack of concern about the implications of
+having COVID-19 (especially following widespread vaccinations and easing of
+restrictions)</li>
+<li>failure of national agencies to report cases to the WHO for political reasons</li>
+</ul>
+<p>The data presented below should be viewed with this limitation in mind.</p>
+<h2 id="data-cleaning">Data Cleaning<a hidden class="anchor" aria-hidden="true" href="#data-cleaning">#</a></h2>
+<p>The data supplied by the WHO was already very clean and complete (with the caveat
+regarding unreported data as described above).</p>
+<p>The values in the <code>Date_reported</code> column were parsed to python datetime objects
+(from string representations of dates as provided in the original dataset) using pandas'
+<code>to_datetime</code> method in order to facilitate easy manipulation of the date data.</p>
+<h2 id="data-exploration">Data Exploration<a hidden class="anchor" aria-hidden="true" href="#data-exploration">#</a></h2>
+<h3 id="investigation-of-covid-19-cases-and-deaths-by-who-region">Investigation of COVID-19 cases and deaths by WHO region<a hidden class="anchor" aria-hidden="true" href="#investigation-of-covid-19-cases-and-deaths-by-who-region">#</a></h3>
+<p>The WHO divides the world into six regions, and has a regional office for each
+of these regions. These are:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">WHO region code</th>
+<th style="text-align:left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">AFRO</td>
+<td style="text-align:left">Regional Office for Africa</td>
+</tr>
+<tr>
+<td style="text-align:left">AMRO</td>
+<td style="text-align:left">Regional Office for the Americas</td>
+</tr>
+<tr>
+<td style="text-align:left">SEARO</td>
+<td style="text-align:left">Regional Office for South-East Asia</td>
+</tr>
+<tr>
+<td style="text-align:left">EURO</td>
+<td style="text-align:left">Regional Office for Europe</td>
+</tr>
+<tr>
+<td style="text-align:left">EMRO</td>
+<td style="text-align:left">Regional Office for the Eastern Mediterranean</td>
+</tr>
+<tr>
+<td style="text-align:left">WPRO</td>
+<td style="text-align:left">Regional Office for the Western Pacific</td>
+</tr>
+</tbody>
+</table>
+<p>Figure 1 shows the total number of (all-time) COVID-19 cases reported to the
+WHO by region. The data indicates that Europe and the Americas have recorded
+the largest numbers of cases of COVID-19 since the beginning of the global
+pandemic, whilst the Eastern Mediterranean and Africa have recorded the fewest.</p>
+<figure class="align-center ">
+    <img loading="lazy" src="./images/covid_cases_by_region.png#center"
+         alt="COVID-19 cases by WHO region"/> <figcaption>
+            <p>COVID-19 cases by WHO region</p>
+        </figcaption>
+</figure>
+
+<p>Figure 2 shows the total number of (all-time) COVID-19 deaths reported to the
+WHO by region. The number of deaths in each region correlates as expected with
+the number of cases in each region &ndash; larger numbers of cases predict
+larger numbers of deaths.</p>
+<p>Note that the order of the regions is not exactly the same as that shown in
+Figure 1. For example, whilst Europe recorded higher case numbers
+than the Americas, the Americas recorded a larger number of deaths. This may
+reflect differences in the overall standard of healthcare provision between
+regions (for example, that healthcare provision in Europe is better in general
+than healthcare in the Americas &ndash; or at least that treatment of COVID-19 cases
+was more effective in Europe).</p>
+<figure class="align-center ">
+    <img loading="lazy" src="./images/covid_deaths_by_region.png#center"
+         alt="COVID-19 deaths by WHO region"/> <figcaption>
+            <p>COVID-19 deaths by WHO region</p>
+        </figcaption>
+</figure>
+
+<p>Figure 3 shows the number of COVID-19 deaths per 100 cases reported to the WHO
+by region. The result shown is interesting in that, whilst (as shown in Figures
+1 and 2) the WHO&rsquo;s Africa region reported the lowest numbers of cases and
+deaths, it is the region with the highest death rate for confirmed COVID-19
+cases.</p>
+<p>This may indicate several things. One interpretation of this result is that
+access to testing and healthcare facilities in the Africa region was lower than
+in other regions, meaning that both more confirmed cases of COVID-19 resulted
+in death, but also that many more mild cases of COVID-19 went untested
+and undiagnosed and therefore were not reported to the WHO (so are not present in
+the dataset), thus disproportionately weighting the Africa region&rsquo;s data with
+more serious &ndash; and fatal &ndash; cases and artificially inflating the number of
+deaths per 100 cases relative to the other regions.</p>
+<figure class="align-center ">
+    <img loading="lazy" src="./images/covid_deaths_per_100_cases_by_region.png#center"
+         alt="COVID-19 deaths per 100 cases by region"/> <figcaption>
+            <p>COVID-19 deaths per 100 cases by region</p>
+        </figcaption>
+</figure>
+
+<p>Figure 4 shows a scatter plot of total (all-time) COVID-19 deaths against
+total (all-time) COVID-19 cases by country. The best-fit line indicates the
+positive correlation between numbers of cases and numbers of deaths noted above
+(see Figures 1 and 2) more clearly. Note that the international data noted by a
+country value of &ldquo;Other&rdquo; has been excluded.</p>
+<figure class="align-center ">
+    <img loading="lazy" src="./images/corr_cases_deaths_countries.png#center"
+         alt="Correlation between numbers of cases and numbers of deaths"/> <figcaption>
+            <p>Correlation between numbers of cases and numbers of deaths</p>
+        </figcaption>
+</figure>
+
+<h3 id="global-covid-19-cases-and-deaths-over-time">Global COVID-19 cases and deaths over time<a hidden class="anchor" aria-hidden="true" href="#global-covid-19-cases-and-deaths-over-time">#</a></h3>
+<p>Figure 5 shows the cumulative totals of COVID-19 cases and deaths reported to
+the WHO over the course of the pandemic. Whilst numbers of
+cases are in the order of hundreds of millions, deaths are in the order of
+millions. At a glance, this tells us that the global death rate for confirmed
+cases of COVID-19 is around 1% (1.29% to be precise).</p>
+<p>As described above, it is
+likely that the true death rate is lower than this (as many mild cases of
+COVID-19 will not have been confirmed and reported to the WHO).</p>
+<p>We can also see a significant increase in the rate of increase of global
+cumulative case numbers in January 2022 (with a less pronounced increase in the
+rate of increase of deaths lagging behind by about a month), which had been
+increasing nearly linearly throughout 2021.</p>
+<figure class="align-center ">
+    <img loading="lazy" src="./images/covid_global_cumulative.png#center"
+         alt="Cumulative global COVID-19 figures"/> <figcaption>
+            <p>Cumulative global COVID-19 figures</p>
+        </figcaption>
+</figure>
+
+<p>Figure 6 shows the numbers of new confirmed COVID-19 cases and deaths reported
+to the WHO each month over the course of the pandemic. Data for December 2022
+is partial and has therefore been excluded to avoid confusion.</p>
+<p>The spike in global case numbers in January 2022 described above can be seen
+more clearly in this visualisation. We can also see the positive impact of the
+global vaccination program in the lower numbers of deaths per month in late
+2021 and 2022 (despite similar or higher numbers of cases per month).</p>
+<figure class="align-center ">
+    <img loading="lazy" src="./images/covid_global_monthly.png#center"
+         alt="Monthly global COVID-19 figures"/> <figcaption>
+            <p>Monthly global COVID-19 figures</p>
+        </figcaption>
+</figure>
+
+<h3 id="uk-covid-19-cases-and-deaths-over-time">UK COVID-19 cases and deaths over time<a hidden class="anchor" aria-hidden="true" href="#uk-covid-19-cases-and-deaths-over-time">#</a></h3>
+<p>Figure 7 shows the cumulative totals of COVID-19 cases and deaths in the UK
+reported to the WHO over the course of the pandemic. This data at a
+national level is much less smooth than the global data (which is likely smoothed by
+the local spikes in cases and deaths happening at slightly different times).</p>
+<figure class="align-center ">
+    <img loading="lazy" src="./images/covid_uk_cumulative.png#center"
+         alt="Cumulative UK COVID-19 figures"/> <figcaption>
+            <p>Cumulative UK COVID-19 figures</p>
+        </figcaption>
+</figure>
+
+<p>Figure 8 shows the numbers of new confirmed COVID-19 cases and deaths in the UK reported
+to the WHO each month over the course of the pandemic. Data for December 2022
+is partial and has therefore been excluded to avoid confusion.</p>
+<p>The impact of the vaccination program is even more pronounced here &ndash; with
+spikes in case numbers corresponding to significant spikes in deaths in 2020
+and early 2021, and far fewer deaths resulting from the larger spike in cases
+in winter 2021-2022.</p>
+<p>A visualisation like this one could be compared with the dates of the national
+lockdowns<sup id="fnref:4"><a href="#fn:4" class="footnote-ref" role="doc-noteref">4</a></sup> to better understand the reasoning behind those lockdowns, and to
+evaluate their effectiveness.</p>
+<figure class="align-center ">
+    <img loading="lazy" src="./images/covid_uk_monthly.png#center"
+         alt="Monthly UK COVID-19 figures"/> <figcaption>
+            <p>Monthly UK COVID-19 figures</p>
+        </figcaption>
+</figure>
+
+<h3 id="investigation-of-covid-19-cases-and-deaths-per-100000-population-by-country">Investigation of COVID-19 cases and deaths per 100,000 population by country<a hidden class="anchor" aria-hidden="true" href="#investigation-of-covid-19-cases-and-deaths-per-100000-population-by-country">#</a></h3>
+<p>Figure 9 shows the number of COVID-19 cases per 100,000 population for each
+country in the WHO dataset.</p>
+<p>As noted in the Missing Data section, the figures not associated with a
+particular country values have been excluded from the maps below.</p>
+<p>Western European countries immediately stand out as having recorded very high numbers of
+cases relative to their populations.</p>
+<figure class="align-center ">
+    <img loading="lazy" src="./images/covid_cases_per_100000_map.png#center"
+         alt="COVID-19 cases per 100,000 population chloropleth map"/> <figcaption>
+            <p>COVID-19 cases per 100,000 population chloropleth map</p>
+        </figcaption>
+</figure>
+
+<p>Figure 10 shows the number of COVID-19 deaths per 100,000 population for each
+country in the WHO dataset.</p>
+<p>Peru immediately jumps out as having been particularly badly affected in terms
+of COVID-19 deaths relative to its population. This result was discussed by the
+BBC in June 2021. <sup id="fnref:5"><a href="#fn:5" class="footnote-ref" role="doc-noteref">5</a></sup></p>
+<figure class="align-center ">
+    <img loading="lazy" src="./images/covid_deaths_per_100000_map.png#center"
+         alt="COVID-19 deaths per 100,000 population chloropleth map"/> <figcaption>
+            <p>COVID-19 deaths per 100,000 population chloropleth map</p>
+        </figcaption>
+</figure>
+
+<section class="footnotes" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn:1" role="doc-endnote">
+<p>WHO,
+<a href="https://covid19.who.int/data">WHO Coronavirus (COVID-19) Dashboard</a>,
+accessed 2022-12-12&#160;<a href="#fnref:1" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:2" role="doc-endnote">
+<p>GOV.UK,
+<a href="https://www.gov.uk/government/publications/iso-country-codes--2">ISO Country Codes</a>,
+accessed 2022-12-15&#160;<a href="#fnref:2" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:3" role="doc-endnote">
+<p>World Bank,
+<a href="https://datacatalog.worldbank.org/search/dataset/0038272/World-Bank-Official-Boundaries">World Bank Official Boundaries</a>,
+accessed 2022-12-13&#160;<a href="#fnref:3" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:4" role="doc-endnote">
+<p>Institute for Government,
+<a href="https://www.instituteforgovernment.org.uk/charts/uk-government-coronavirus-lockdowns">Timeline of UK government coronavirus lockdowns and restrictions</a>,
+accessed 2022-12-21&#160;<a href="#fnref:4" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+<li id="fn:5" role="doc-endnote">
+<p>BBC,
+<a href="https://www.bbc.co.uk/news/world-latin-america-53150808">Covid: Why has Peru been so badly hit?</a>,
+accessed 2022-12-21&#160;<a href="#fnref:5" class="footnote-backref" role="doc-backlink">&#x21a9;&#xfe0e;</a></p>
+</li>
+</ol>
+</section>
+
+
+</div>
+    </main>
+    
+<footer class="footer">
+    <span>&copy; 2022 <a href="http://samlarkin.github.io/">Sam Larkin</a></span>
+    <span>
+        Powered by
+        <a href="https://gohugo.io/" rel="noopener noreferrer" target="_blank">Hugo</a> &
+        <a href="https://github.com/adityatelange/hugo-PaperMod/" rel="noopener" target="_blank">PaperMod</a>
+    </span>
+</footer>
+<a href="#top" aria-label="go to top" title="Go to Top (Alt + G)" class="top-link" id="top-link" accesskey="g">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentColor">
+        <path d="M12 6H0l6-6z" />
+    </svg>
+</a>
+
+<script>
+    let menu = document.getElementById('menu')
+    if (menu) {
+        menu.scrollLeft = localStorage.getItem("menu-scroll-position");
+        menu.onscroll = function () {
+            localStorage.setItem("menu-scroll-position", menu.scrollLeft);
+        }
+    }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            var id = this.getAttribute("href").substr(1);
+            if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView({
+                    behavior: "smooth"
+                });
+            } else {
+                document.querySelector(`[id='${decodeURIComponent(id)}']`).scrollIntoView();
+            }
+            if (id === "top") {
+                history.replaceState(null, null, " ");
+            } else {
+                history.pushState(null, null, `#${id}`);
+            }
+        });
+    });
+
+</script>
+<script>
+    var mybutton = document.getElementById("top-link");
+    window.onscroll = function () {
+        if (document.body.scrollTop > 800 || document.documentElement.scrollTop > 800) {
+            mybutton.style.visibility = "visible";
+            mybutton.style.opacity = "1";
+        } else {
+            mybutton.style.visibility = "hidden";
+            mybutton.style.opacity = "0";
+        }
+    };
+
+</script>
+<script>
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+        if (document.body.className.includes("dark")) {
+            document.body.classList.remove('dark');
+            localStorage.setItem("pref-theme", 'light');
+        } else {
+            document.body.classList.add('dark');
+            localStorage.setItem("pref-theme", 'dark');
+        }
+    })
+
+</script>
+</body>
+
+</html>

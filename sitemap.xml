@@ -2,6 +2,12 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>http://samlarkin.github.io/projects/who_covid19_eda/</loc>
+    <lastmod>2022-12-21T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://samlarkin.github.io/</loc>
+    <lastmod>2022-12-21T00:00:00+00:00</lastmod>
+  </url><url>
     <loc>http://samlarkin.github.io/contact/</loc>
     <lastmod>2022-12-18T00:00:00+00:00</lastmod>
   </url><url>
@@ -9,9 +15,6 @@
     <lastmod>2022-12-18T00:00:00+00:00</lastmod>
   </url><url>
     <loc>http://samlarkin.github.io/projects/</loc>
-    <lastmod>2022-12-11T17:00:37+00:00</lastmod>
-  </url><url>
-    <loc>http://samlarkin.github.io/</loc>
     <lastmod>2022-12-11T17:00:37+00:00</lastmod>
   </url><url>
     <loc>http://samlarkin.github.io/projects/uci_automobile_eda/</loc>

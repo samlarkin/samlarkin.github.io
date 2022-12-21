@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Exploratory Data Analysis: WHO COVID-19 data on Sam Larkin</title>
+    <link>http://samlarkin.github.io/projects/who_covid19_eda/</link>
+    <description>Recent content in Exploratory Data Analysis: WHO COVID-19 data on Sam Larkin</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-gb</language>
+    <lastBuildDate>Wed, 21 Dec 2022 00:00:00 +0000</lastBuildDate><atom:link href="http://samlarkin.github.io/projects/who_covid19_eda/index.xml" rel="self" type="application/rss+xml" />
+  </channel>
+</rss>
